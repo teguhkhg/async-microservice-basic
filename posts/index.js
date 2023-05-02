@@ -7,7 +7,16 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const db = [];
+const db = {};
+
+axios.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
 
 app.post("/posts", async (req, res) => {
   const id = randomBytes(4).toString("hex");
@@ -18,7 +27,7 @@ app.post("/posts", async (req, res) => {
   };
 
   db[id] = data;
-  
+
   console.log(db);
   await axios.post("http://localhost:4000/events", {
     type: "POST_CREATED",

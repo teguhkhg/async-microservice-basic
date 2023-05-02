@@ -7,44 +7,59 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const db = [];
+axios.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
+
+const db = {};
 
 app.post("/posts/:id/comments", async (req, res) => {
   const { id: postId } = req.params;
 
-  if (!posts.includes(postId)) {
-    return res.status(404).send("post not found");
+  if (!db[postId]) {
+    return res.status(404).send(`post not found. [id: ${postId}]`);
   }
 
   const commentId = randomBytes(4).toString("hex");
 
-  const data = {
+  const comment = {
     id: commentId,
     content: req.body.content,
     status: "PENDING",
   };
 
   const { comments } = db[postId];
-  comments.push(data);
+  comments.push(comment);
   db[postId].comments = comments;
 
   console.log(db);
   await axios.post("http://localhost:4000/events", {
     type: "COMMENT_CREATED",
-    data,
+    data: {
+      id: postId,
+      comment,
+    },
   });
 
-  res.status(201).send(data);
+  res.status(201).send(comment);
 });
 
 app.post("/events", async (req, res) => {
   const { type, data } = req.body;
 
-  if (type === "POST_CREATED") {
-    db.push({
-      id: data.id,
-      comments: [],
-    });
+  switch (type) {
+    case "POST_CREATED":
+      db[data.id] = {
+        id: data.id,
+        comments: [],
+      };
+      break;
+    default:
   }
 
   console.log(db);
@@ -52,5 +67,5 @@ app.post("/events", async (req, res) => {
 });
 
 app.listen("4002", () => {
-  console.log("app is listening to port 4001");
+  console.log("app is listening to port 4002");
 });
