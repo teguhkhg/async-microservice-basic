@@ -8,6 +8,7 @@ app.use(express.json());
 app.use(cors());
 
 const db = {};
+const { postCreated, commentModerated } = require("./event")(db);
 
 app.post("/posts/:id/comments", async (req, res) => {
   const { id: postId } = req.params;
@@ -23,32 +24,31 @@ app.post("/posts/:id/comments", async (req, res) => {
     content: req.body.content,
     status: "PENDING",
   };
-
-  const { comments } = db[postId];
-  comments.push(comment);
-  db[postId].comments = comments;
+  db[postId].comments.push(comment);
 
   console.log(db);
   await axios.post("http://localhost:4000/events", {
     type: "COMMENT_CREATED",
     data: {
-      id: postId,
-      comment,
+      ...comment,
+      postId,
     },
   });
 
   res.status(201).send(comment);
 });
 
+
 app.post("/events", async (req, res) => {
   const { type, data } = req.body;
 
   switch (type) {
     case "POST_CREATED":
-      db[data.id] = {
-        id: data.id,
-        comments: [],
-      };
+      postCreated(type, data);
+      break;
+
+    case "COMMENT_MODERATED":
+      commentModerated(type, data);
       break;
     default:
   }

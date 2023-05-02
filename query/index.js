@@ -1,15 +1,15 @@
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
-const { randomBytes } = require("crypto");
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 const db = {};
+const { postCreated, commentCreated, commentUpdated } = require("./event")(db);
 
-app.get("/query", async (req, res) => {
+app.get("/posts", async (req, res) => {
   res.status(200).send(db);
 });
 
@@ -18,18 +18,17 @@ app.post("/events", async (req, res) => {
 
   switch (type) {
     case "POST_CREATED":
-      db[data.id] = {
-        id: data.id,
-        comments: [],
-      };
+      postCreated(type, data);
       break;
-    case "COMMENT_CREATED":
-      const { id, comment } = data;
 
-      const { comments } = db[id];
-      comments.push(comment);
-      db[data.id].comments = comments;
+    case "COMMENT_CREATED":
+      commentCreated(type, data);
       break;
+
+    case "COMMENT_UPDATED":
+      commentUpdated(type, data);
+      break;
+
     default:
   }
 

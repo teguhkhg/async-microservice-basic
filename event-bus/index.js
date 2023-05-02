@@ -14,11 +14,13 @@ axios.interceptors.response.use(
 );
 
 app.post("/events", async (req, res) => {
+  console.log("event received with type ", req.body.type);
   const data = req.body;
 
   await axios.post("http://localhost:4001/events", data);
   await axios.post("http://localhost:4002/events", data);
   await axios.post("http://localhost:4003/events", data);
+  await axios.post("http://localhost:4004/events", data);
 
   res.status(200).send("ok");
 });
