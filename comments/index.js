@@ -18,7 +18,6 @@ app.post("/posts/:id/comments", async (req, res) => {
   }
 
   const commentId = randomBytes(4).toString("hex");
-
   const comment = {
     id: commentId,
     content: req.body.content,
@@ -48,7 +47,7 @@ app.post("/events", async (req, res) => {
       break;
 
     case "COMMENT_MODERATED":
-      commentModerated(type, data);
+      await commentModerated(type, data);
       break;
     default:
   }

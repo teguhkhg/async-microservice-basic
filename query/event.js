@@ -24,10 +24,33 @@ function QueryEvent(db) {
     comment.content = content;
   }
 
+  function handleEvent(event) {
+    const { type, data } = event;
+
+    switch (type) {
+      case "POST_CREATED":
+        postCreated(type, data);
+        break;
+
+      case "COMMENT_CREATED":
+        commentCreated(type, data);
+        break;
+
+      case "COMMENT_UPDATED":
+        commentUpdated(type, data);
+        break;
+
+      default:
+    }
+
+    console.log(db);
+  }
+
   return {
     postCreated,
     commentCreated,
     commentUpdated,
+    handleEvent,
   };
 }
 

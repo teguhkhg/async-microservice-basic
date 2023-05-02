@@ -7,35 +7,26 @@ app.use(express.json());
 app.use(cors());
 
 const db = {};
-const { postCreated, commentCreated, commentUpdated } = require("./event")(db);
+const { handleEvent } = require("./event")(db);
 
 app.get("/posts", async (req, res) => {
   res.status(200).send(db);
 });
 
-app.post("/events", async (req, res) => {
-  const { type, data } = req.body;
-
-  switch (type) {
-    case "POST_CREATED":
-      postCreated(type, data);
-      break;
-
-    case "COMMENT_CREATED":
-      commentCreated(type, data);
-      break;
-
-    case "COMMENT_UPDATED":
-      commentUpdated(type, data);
-      break;
-
-    default:
-  }
-
-  console.log(db);
+app.post("/events", (req, res) => {
+  handleEvent(req.body);
   res.status(200).send("ok");
 });
 
-app.listen("4003", () => {
+app.listen("4003", async () => {
   console.log("app is listening to port 4003");
+
+  try {
+    const events = await axios.get("http://localhost:4000/events");
+    for (const event of events.data) {
+      handleEvent(event);
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
 });
