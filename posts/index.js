@@ -9,15 +9,6 @@ app.use(cors());
 
 const db = {};
 
-axios.interceptors.response.use(
-  function (response) {
-    return response;
-  },
-  function (error) {
-    return Promise.reject(error);
-  }
-);
-
 app.post("/posts", async (req, res) => {
   const id = randomBytes(4).toString("hex");
 

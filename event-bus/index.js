@@ -9,7 +9,7 @@ axios.interceptors.response.use(
     return response;
   },
   function (error) {
-    return Promise.reject(error);
+    console.log("failed to send data");
   }
 );
 

@@ -9,15 +9,6 @@ app.use(cors());
 
 const db = {};
 
-axios.interceptors.response.use(
-  function (response) {
-    return response;
-  },
-  function (error) {
-    return Promise.reject(error);
-  }
-);
-
 app.get("/query", async (req, res) => {
   res.status(200).send(db);
 });

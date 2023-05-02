@@ -7,15 +7,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-axios.interceptors.response.use(
-  function (response) {
-    return response;
-  },
-  function (error) {
-    return Promise.reject(error);
-  }
-);
-
 const db = {};
 
 app.post("/posts/:id/comments", async (req, res) => {
