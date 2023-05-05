@@ -22,7 +22,7 @@ app.listen("4003", async () => {
   console.log("app is listening to port 4003");
 
   try {
-    const events = await axios.get("http://localhost:4000/events");
+    const events = await axios.get("http://event-bus-srv:4000/events");
     for (const event of events.data) {
       handleEvent(event);
     }

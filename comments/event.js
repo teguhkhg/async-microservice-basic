@@ -16,7 +16,7 @@ function CommentEvents(db) {
     const comment = db[postId].comments.find((comment) => comment.id === id);
     comment.status = status;
 
-    await axios.post("http://localhost:4000/events", {
+    await axios.post("http://event-bus-srv:4000/events", {
       type: "COMMENT_UPDATED",
       data: {
         ...comment,

@@ -26,7 +26,7 @@ app.post("/posts/:id/comments", async (req, res) => {
   db[postId].comments.push(comment);
 
   console.log(db);
-  await axios.post("http://localhost:4000/events", {
+  await axios.post("http://event-bus-srv:4000/events", {
     type: "COMMENT_CREATED",
     data: {
       ...comment,

@@ -9,7 +9,7 @@ app.use(cors());
 
 const db = {};
 
-app.post("/posts", async (req, res) => {
+app.post("/posts/create", async (req, res) => {
   const id = randomBytes(4).toString("hex");
   const data = {
     id,
@@ -18,7 +18,7 @@ app.post("/posts", async (req, res) => {
   db[id] = data;
 
   console.log(db);
-  await axios.post("http://localhost:4000/events", {
+  await axios.post("http://event-bus-srv:4000/events", {
     type: "POST_CREATED",
     data,
   });

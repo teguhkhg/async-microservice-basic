@@ -24,10 +24,10 @@ app.post("/events", async (req, res) => {
   const data = req.body;
   events.push(data);
 
-  await axios.post("http://localhost:4001/events", data);
-  await axios.post("http://localhost:4002/events", data);
-  await axios.post("http://localhost:4003/events", data);
-  await axios.post("http://localhost:4004/events", data);
+  await axios.post("http://posts-srv:4001/events", data);
+  await axios.post("http://comments-srv:4002/events", data);
+  await axios.post("http://query-srv:4003/events", data);
+  await axios.post("http://moderation-srv:4004/events", data);
 
   res.status(200).send("ok");
 });

@@ -14,7 +14,7 @@ app.post("/events", async (req, res) => {
         ? "REJECTED"
         : "APPROVED";
 
-      await axios.post("http://localhost:4000/events", {
+      await axios.post("http://event-bus-srv:4000/events", {
         type: "COMMENT_MODERATED",
         data: {
           ...data,
